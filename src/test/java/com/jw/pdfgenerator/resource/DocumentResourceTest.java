@@ -1,26 +1,21 @@
 package com.jw.pdfgenerator.resource;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.FopFactoryBuilder;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
-import com.jw.pdfgenerator.resource.DocumentResource;
+import com.jw.pdfgenerator.AppResourceConfig;
 
 public class DocumentResourceTest extends JerseyTest {
 
@@ -34,17 +29,7 @@ public class DocumentResourceTest extends JerseyTest {
 
     @Override
     protected Application configure() {
-        ResourceConfig resourceConfig = new ResourceConfig(DocumentResource.class);
-        resourceConfig.register(new AbstractBinder() {
-            @Override
-            protected void configure() {
-                FopFactory fopFactory = new FopFactoryBuilder(new File(".").toURI())
-                        .build();
-                bind(fopFactory).to(FopFactory.class);
-            }
-        });
-        resourceConfig.register(MultiPartFeature.class);
-        return resourceConfig;
+        return new AppResourceConfig();
     }
 
     @Test
