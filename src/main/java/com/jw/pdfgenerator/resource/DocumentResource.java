@@ -58,6 +58,7 @@ public class DocumentResource {
                 }
             }
         };
+        LOG.info("Document created");
         return Response.ok(streamingOutput)
                 .header("Content-Disposition", "attachment; filename=\"document.pdf\"")
                 .build();

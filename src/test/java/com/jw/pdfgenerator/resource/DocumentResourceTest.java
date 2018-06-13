@@ -50,7 +50,7 @@ public class DocumentResourceTest extends JerseyTest {
                 "      <fo:page-sequence master-reference=\"A4-portrait\">\n" + 
                 "        <fo:flow flow-name=\"xsl-region-body\">\n" + 
                 "          <fo:block>\n" + 
-                "            Hello, <xsl:value-of select=\"name\"/>!\n" + 
+                "            Hello, <xsl:value-of select=\"note/to\"/>!\n" + 
                 "          </fo:block>\n" + 
                 "        </fo:flow>\n" + 
                 "      </fo:page-sequence>\n" + 
