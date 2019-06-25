@@ -1,14 +1,13 @@
 package com.jw.pdfgenerator;
 
-import java.io.File;
-
+import com.jw.pdfgenerator.resource.DocumentResource;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import com.jw.pdfgenerator.resource.DocumentResource;
+import java.io.File;
 
 public class AppResourceConfig extends ResourceConfig {
     public AppResourceConfig() {

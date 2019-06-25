@@ -1,13 +1,12 @@
 package com.jw.pdfgenerator;
 
-import java.net.URI;
-
-import javax.ws.rs.core.UriBuilder;
-
 import org.eclipse.jetty.server.Server;
 import org.glassfish.jersey.jetty.JettyHttpContainerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 
 public class App {
 
@@ -26,8 +25,7 @@ public class App {
 
     /**
      * Starts the service
-     * 
-     * @throws Exception if the server fails to start
+     *
      */
     public void start() throws Exception {
         server.start();
