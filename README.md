@@ -5,7 +5,7 @@ Microservice written in Java that uses <a href="https://xmlgraphics.apache.org/f
 
 ### Prerequisites
 
-* Java 8 or higher
+* Java 11 or higher
 * Apache Maven
 
 ### Installation
@@ -28,19 +28,19 @@ Use for example a basic HTML form to interact with the service:
     <!DOCTYPE html>
     <html lang="en">
     
-    <head>
-        <meta charset="utf-8">
-        <title>Very basic form</title>
-    </head>
+        <head>
+            <meta charset="utf-8">
+            <title>Very basic form</title>
+        </head>
     
-    <body>
-        <form action="http://localhost:8080/document" method="POST" enctype="multipart/form-data">
-            <label for="xml">XML input:</label> <input type="file" id="xml" name="xml" accept=".xml">
-            <label for="xslt">XSLT input:</label> <input type="file" id="xslt" name="xslt" accept=".xsl">
-            <input type="submit">
-        </form>
-    </body>
-</html>
+        <body>
+            <form action="http://localhost:8080/document" method="POST" enctype="multipart/form-data">
+                <label for="xml">XML input:</label> <input type="file" id="xml" name="xml" accept=".xml">
+                <label for="xslt">XSLT input:</label> <input type="file" id="xslt" name="xslt" accept=".xsl">
+                <input type="submit">
+            </form>
+        </body>
+    </html>
 
 Example on XML input:
 
