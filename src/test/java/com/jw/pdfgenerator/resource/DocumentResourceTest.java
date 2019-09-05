@@ -68,18 +68,4 @@ public class DocumentResourceTest extends JerseyTest {
         assertEquals(200, response.getStatus());
     }
 
-    @Test
-    public void shouldReturn400ErrorOnMalformedInput() {
-        String malformedXslt = "<foo>";
-        FormDataMultiPart form = new FormDataMultiPart();
-        form.bodyPart(new StreamDataBodyPart("xml", new ByteArrayInputStream(xml.getBytes())));
-        form.bodyPart(new StreamDataBodyPart("xslt", new ByteArrayInputStream(malformedXslt.getBytes())));
-
-        Response response = target("document")
-                .register(MultiPartFeature.class)
-                .request()
-                .post(Entity.entity(form, MediaType.MULTIPART_FORM_DATA_TYPE));
-
-        assertEquals(400, response.getStatus());
-    }
 }

@@ -25,7 +25,6 @@ public class App {
 
     /**
      * Starts the service
-     *
      */
     public void start() throws Exception {
         server.start();
