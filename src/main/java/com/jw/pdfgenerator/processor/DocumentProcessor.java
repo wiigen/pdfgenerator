@@ -9,7 +9,10 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class DocumentProcessor implements StreamingOutput {
 
