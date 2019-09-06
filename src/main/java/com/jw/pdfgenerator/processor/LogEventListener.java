@@ -1,4 +1,4 @@
-package com.jw.pdfgenerator.listener;
+package com.jw.pdfgenerator.processor;
 
 import org.apache.fop.events.Event;
 import org.apache.fop.events.EventFormatter;
@@ -10,7 +10,7 @@ public class LogEventListener implements EventListener {
 
     private final Logger logger;
 
-    public LogEventListener(Logger logger) {
+    LogEventListener(Logger logger) {
         this.logger = logger;
     }
 
