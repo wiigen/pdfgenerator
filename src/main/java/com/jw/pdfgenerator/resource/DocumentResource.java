@@ -1,6 +1,7 @@
 package com.jw.pdfgenerator.resource;
 
 import com.jw.pdfgenerator.processor.DocumentProcessor;
+import io.prometheus.client.Histogram;
 import org.apache.fop.apps.FopFactory;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -14,8 +15,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.InputStream;
 
-@Path("document")
+@Path("documents")
 public class DocumentResource {
+
+    static final Histogram requestLatency = Histogram.build()
+            .name("requests_latency_seconds")
+            .help("Request latency in seconds.")
+            .register();
 
     private final FopFactory fopFactory;
 
@@ -31,11 +37,16 @@ public class DocumentResource {
             @FormDataParam("xml") InputStream xml,
             @FormDataParam("xslt") InputStream xslt)
     {
-        StreamingOutput streamingOutput = new DocumentProcessor(fopFactory, xml, xslt);
+        Histogram.Timer requestTimer = requestLatency.startTimer();
+        try {
+            StreamingOutput streamingOutput = new DocumentProcessor(fopFactory, xml, xslt);
 
-        return Response.ok(streamingOutput)
-                .header("Content-Disposition", "attachment; filename=\"document.pdf\"")
-                .build();
+            return Response.ok(streamingOutput)
+                    .header("Content-Disposition", "attachment; filename=\"document.pdf\"")
+                    .build();
+        } finally {
+            requestTimer.observeDuration();
+        }
     }
 
 }

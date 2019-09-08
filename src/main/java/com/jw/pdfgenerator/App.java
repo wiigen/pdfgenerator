@@ -1,12 +1,13 @@
 package com.jw.pdfgenerator;
 
+import io.prometheus.client.exporter.MetricsServlet;
+import io.prometheus.client.hotspot.DefaultExports;
 import org.eclipse.jetty.server.Server;
-import org.glassfish.jersey.jetty.JettyHttpContainerFactory;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 public class App {
 
@@ -17,10 +18,13 @@ public class App {
     public App(String[] args) {
         String port = args[0];
         LOG.info("Starting server on port {} ...", port);
-        URI baseUri = UriBuilder.fromUri("http://localhost/")
-                .port(Integer.parseInt(port))
-                .build();
-        server = JettyHttpContainerFactory.createServer(baseUri, new AppResourceConfig());
+
+        server = new Server(Integer.parseInt(port));
+        ServletContextHandler context = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
+        context.addServlet(new ServletHolder(new ServletContainer(new AppResourceConfig())), "/api/*");
+        context.addServlet(new ServletHolder(new MetricsServlet()), "/metrics");
+
+        DefaultExports.initialize();
     }
 
     /**

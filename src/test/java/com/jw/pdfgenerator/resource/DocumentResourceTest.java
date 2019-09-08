@@ -60,7 +60,7 @@ public class DocumentResourceTest extends JerseyTest {
         form.bodyPart(new StreamDataBodyPart("xml", new ByteArrayInputStream(xml.getBytes())));
         form.bodyPart(new StreamDataBodyPart("xslt", new ByteArrayInputStream(xslt.getBytes())));
 
-        Response response = target("document")
+        Response response = target("documents")
                 .register(MultiPartFeature.class)
                 .request()
                 .post(Entity.entity(form, MediaType.MULTIPART_FORM_DATA_TYPE));

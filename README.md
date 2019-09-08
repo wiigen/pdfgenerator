@@ -34,7 +34,7 @@ Use for example a basic HTML form to interact with the service:
         </head>
     
         <body>
-            <form action="http://localhost:8080/document" method="POST" enctype="multipart/form-data">
+            <form action="http://localhost:8080/api/documents" method="POST" enctype="multipart/form-data">
                 <label for="xml">XML input:</label> <input type="file" id="xml" name="xml" accept=".xml">
                 <label for="xslt">XSLT input:</label> <input type="file" id="xslt" name="xslt" accept=".xsl">
                 <input type="submit">
