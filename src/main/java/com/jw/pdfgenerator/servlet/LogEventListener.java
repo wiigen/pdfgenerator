@@ -1,4 +1,4 @@
-package com.jw.pdfgenerator.processor;
+package com.jw.pdfgenerator.servlet;
 
 import org.apache.fop.events.Event;
 import org.apache.fop.events.EventFormatter;

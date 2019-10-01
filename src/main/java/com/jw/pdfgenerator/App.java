@@ -1,13 +1,17 @@
 package com.jw.pdfgenerator;
 
+import com.jw.pdfgenerator.servlet.DocumentServlet;
 import io.prometheus.client.exporter.MetricsServlet;
 import io.prometheus.client.hotspot.DefaultExports;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.FopFactoryBuilder;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public class App {
 
@@ -21,7 +25,7 @@ public class App {
 
         server = new Server(Integer.parseInt(port));
         ServletContextHandler context = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new ServletContainer(new AppResourceConfig())), "/api/*");
+        context.addServlet(new ServletHolder(new DocumentServlet(createFopFactory())), "/api/document");
         context.addServlet(new ServletHolder(new MetricsServlet()), "/metrics");
 
         DefaultExports.initialize();
@@ -37,5 +41,9 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         new App(args).start();
+    }
+
+    private FopFactory createFopFactory() {
+        return new FopFactoryBuilder(new File(".").toURI()).build();
     }
 }
