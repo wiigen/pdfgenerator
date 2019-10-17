@@ -3,19 +3,21 @@ package com.jw.pdfgenerator;
 import com.jw.pdfgenerator.servlet.DocumentServlet;
 import io.prometheus.client.exporter.MetricsServlet;
 import io.prometheus.client.hotspot.DefaultExports;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.FopFactoryBuilder;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import javax.servlet.MultipartConfigElement;
 
 public class App {
 
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
+
+    private static final long DEFAULT_MAX_FILE_SIZE     = 1024 * 1024 * 5;
+    private static final long DEFAULT_MAX_REQUEST_SIZE  = 1024 * 1024 * 5 * 5;
+    private static final int DEFAULT_MAX_SIZE_THRESHOLD = 1024 * 1024;
 
     private final Server server;
 
@@ -25,7 +27,10 @@ public class App {
 
         server = new Server(Integer.parseInt(port));
         ServletContextHandler context = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new DocumentServlet(createFopFactory())), "/api/document");
+
+        ServletHolder documentServletHolder = createdocumentServletHolder();
+        context.addServlet(documentServletHolder, "/api/documents");
+
         context.addServlet(new ServletHolder(new MetricsServlet()), "/metrics");
 
         DefaultExports.initialize();
@@ -34,16 +39,41 @@ public class App {
     /**
      * Starts the service
      */
-    public void start() throws Exception {
+    public App start() throws Exception {
         server.start();
+        return this;
+    }
+
+    public void join() throws InterruptedException {
         server.join();
     }
 
-    public static void main(String[] args) throws Exception {
-        new App(args).start();
+    /**
+     * Stop the service
+     */
+    public void stop() throws Exception {
+        server.stop();
     }
 
-    private FopFactory createFopFactory() {
-        return new FopFactoryBuilder(new File(".").toURI()).build();
+    public static void main(String[] args) throws Exception {
+        new App(args).start().join();
     }
+
+    private ServletHolder createdocumentServletHolder() {
+
+        LOG.info("Setting Multipart max file size to {} and max request size {}",
+                DEFAULT_MAX_FILE_SIZE, DEFAULT_MAX_REQUEST_SIZE);
+
+        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+                "",
+                DEFAULT_MAX_FILE_SIZE,
+                DEFAULT_MAX_REQUEST_SIZE,
+                DEFAULT_MAX_SIZE_THRESHOLD);
+
+        ServletHolder holder = new ServletHolder(new DocumentServlet());
+        holder.getRegistration().setMultipartConfig(multipartConfigElement);
+
+        return holder;
+    }
+
 }

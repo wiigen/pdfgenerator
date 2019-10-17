@@ -1,9 +1,7 @@
 package com.jw.pdfgenerator.servlet;
 
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
+import io.prometheus.client.Histogram;
+import org.apache.fop.apps.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,19 +16,30 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 public class DocumentServlet extends HttpServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocumentServlet.class);
 
-    private final FopFactory fopFactory;
+    static final Histogram requestLatency = Histogram.build()
+            .name("requests_latency_seconds")
+            .help("Request latency in seconds.")
+            .register();
 
-    public DocumentServlet(FopFactory fopFactory) {
-        this.fopFactory = fopFactory;
+    private FopFactory fopFactory;
+    private TransformerFactory tFactory;
+
+    @Override
+    public void init() {
+        this.fopFactory = new FopFactoryBuilder(new File(".").toURI()).build();
+        this.tFactory = TransformerFactory.newInstance();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+        Histogram.Timer requestTimer = requestLatency.startTimer();
+
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             //Setup input
             Source source = new StreamSource(req.getPart("xml").getInputStream());
@@ -42,7 +51,6 @@ public class DocumentServlet extends HttpServlet {
             Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, out);
 
             //Setup Transformer
-            TransformerFactory tFactory = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer(stylesheet);
 
             //Make sure the XSL transformation's result is piped through to FOP
@@ -60,6 +68,8 @@ public class DocumentServlet extends HttpServlet {
             resp.getOutputStream().flush();
         } catch (Exception e) {
             throw new ServletException("FOP processing failed", e);
+        } finally {
+            requestTimer.observeDuration();
         }
     }
 }
