@@ -2,6 +2,7 @@ package com.jw.pdfgenerator.resource;
 
 import com.jw.pdfgenerator.processor.DocumentProcessor;
 import io.prometheus.client.Histogram;
+import io.swagger.v3.oas.annotations.Operation;
 import org.apache.fop.apps.FopFactory;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -33,6 +34,7 @@ public class DocumentResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Operation(summary = "Create document", description = "Create document based on XML and XSLT")
     public Response createDocument(
             @FormDataParam("xml") InputStream xml,
             @FormDataParam("xslt") InputStream xslt)

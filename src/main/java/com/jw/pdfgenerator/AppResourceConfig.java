@@ -1,6 +1,7 @@
 package com.jw.pdfgenerator;
 
 import com.jw.pdfgenerator.resource.DocumentResource;
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -14,6 +15,9 @@ public class AppResourceConfig extends ResourceConfig {
         super(DocumentResource.class);
 
         register(MultiPartFeature.class);
+
+        OpenApiResource openApiResource = new OpenApiResource();
+        register(openApiResource);
 
         register(new AbstractBinder() {
             @Override
