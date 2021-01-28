@@ -1,6 +1,8 @@
 package com.jw.pdfgenerator.resource;
 
 import com.jw.pdfgenerator.AppResourceConfig;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
@@ -12,6 +14,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,7 +34,7 @@ public class DocumentResourceTest extends JerseyTest {
     }
 
     @Test
-    public void shouldCreateDocumentWith200Ok() {
+    public void shouldCreateDocumentWith200Ok() throws Exception {
         String xslt = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
                 + "<xsl:stylesheet version=\"1.0\"\n"
                 + "      xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"\n"
@@ -66,6 +69,17 @@ public class DocumentResourceTest extends JerseyTest {
                 .post(Entity.entity(form, MediaType.MULTIPART_FORM_DATA_TYPE));
 
         assertEquals(200, response.getStatus());
+
+        byte[] content = response.readEntity(byte[].class);
+
+        try (InputStream inputStream = new ByteArrayInputStream(content)) {
+            try (PDDocument pdf = PDDocument.load(inputStream)) {
+                assertEquals(1, pdf.getNumberOfPages());
+
+                String text = new PDFTextStripper().getText(pdf).trim();
+                assertEquals("Hello, Tove!", text);
+            }
+        }
     }
 
 }
