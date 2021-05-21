@@ -13,9 +13,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <jersey.version>2.33</jersey.version>
-        <prometheus.version>0.9.0</prometheus.version>
-        <swagger.version>2.1.6</swagger.version>
+        <jersey.version>2.34</jersey.version>
+        <prometheus.version>0.10.0</prometheus.version>
+        <swagger.version>2.1.9</swagger.version>
         <slf4j.version>1.7.30</slf4j.version>
     </properties>
 
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
 

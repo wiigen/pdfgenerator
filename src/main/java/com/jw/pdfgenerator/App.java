@@ -1,5 +1,7 @@
 package com.jw.pdfgenerator;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import io.prometheus.client.exporter.MetricsServlet;
 import io.prometheus.client.hotspot.DefaultExports;
 import org.eclipse.jetty.server.Server;
@@ -18,6 +20,10 @@ public class App {
     public App(String[] args) {
         String port = args[0];
         LOG.info("Starting server on port {} ...", port);
+
+        // print internal state
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        StatusPrinter.print(lc);
 
         server = new Server(Integer.parseInt(port));
         ServletContextHandler context = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
