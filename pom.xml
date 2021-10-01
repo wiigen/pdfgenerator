@@ -13,10 +13,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <jetty.version>9.4.41.v20210516</jetty.version>
-        <prometheus.version>0.10.0</prometheus.version>
+        <jetty.version>9.4.44.v20210927</jetty.version>
+        <prometheus.version>0.12.0</prometheus.version>
         <apache.httpclient.version>4.5.13</apache.httpclient.version>
-        <slf4j.version>1.7.30</slf4j.version>
+        <slf4j.version>1.7.32</slf4j.version>
     </properties>
 
     <dependencies>
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.6</version>
         </dependency>
 
         <dependency>
@@ -120,7 +120,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
