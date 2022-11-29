@@ -9,10 +9,10 @@ import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -20,13 +20,14 @@ import static org.junit.Assert.assertEquals;
 
 public class DocumentResourceTest extends JerseyTest {
 
-    private final String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            + "<note>\n"
-            + "  <to>Tove</to>\n"
-            + "  <from>Jani</from>\n"
-            + "  <heading>Reminder</heading>\n"
-            + "  <body>Don't forget me this weekend!</body>\n"
-            + "</note>";
+    private final String xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <note>
+              <to>Tove</to>
+              <from>Jani</from>
+              <heading>Reminder</heading>
+              <body>Don't forget me this weekend!</body>
+            </note>""";
 
     @Override
     protected Application configure() {
@@ -35,29 +36,30 @@ public class DocumentResourceTest extends JerseyTest {
 
     @Test
     public void shouldCreateDocumentWith200Ok() throws Exception {
-        String xslt = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-                + "<xsl:stylesheet version=\"1.0\"\n"
-                + "      xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"\n"
-                + "      xmlns:fo=\"http://www.w3.org/1999/XSL/Format\">\n"
-                + "  <xsl:output method=\"xml\" indent=\"yes\"/>\n"
-                + "  <xsl:template match=\"/\">\n"
-                + "    <fo:root>\n"
-                + "      <fo:layout-master-set>\n"
-                + "        <fo:simple-page-master master-name=\"A4-portrait\"\n"
-                + "              page-height=\"29.7cm\" page-width=\"21.0cm\" margin=\"2cm\">\n"
-                + "          <fo:region-body/>\n"
-                + "        </fo:simple-page-master>\n"
-                + "      </fo:layout-master-set>\n"
-                + "      <fo:page-sequence master-reference=\"A4-portrait\">\n"
-                + "        <fo:flow flow-name=\"xsl-region-body\">\n"
-                + "          <fo:block>\n"
-                + "            Hello, <xsl:value-of select=\"note/to\"/>!\n"
-                + "          </fo:block>\n"
-                + "        </fo:flow>\n"
-                + "      </fo:page-sequence>\n"
-                + "    </fo:root>\n"
-                + "  </xsl:template>\n"
-                + "</xsl:stylesheet>";
+        String xslt = """
+                <?xml version="1.0" encoding="utf-8"?>
+                <xsl:stylesheet version="1.0"
+                      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                      xmlns:fo="http://www.w3.org/1999/XSL/Format">
+                  <xsl:output method="xml" indent="yes"/>
+                  <xsl:template match="/">
+                    <fo:root>
+                      <fo:layout-master-set>
+                        <fo:simple-page-master master-name="A4-portrait"
+                              page-height="29.7cm" page-width="21.0cm" margin="2cm">
+                          <fo:region-body/>
+                        </fo:simple-page-master>
+                      </fo:layout-master-set>
+                      <fo:page-sequence master-reference="A4-portrait">
+                        <fo:flow flow-name="xsl-region-body">
+                          <fo:block>
+                            Hello, <xsl:value-of select="note/to"/>!
+                          </fo:block>
+                        </fo:flow>
+                      </fo:page-sequence>
+                    </fo:root>
+                  </xsl:template>
+                </xsl:stylesheet>""";
 
         FormDataMultiPart form = new FormDataMultiPart();
         form.bodyPart(new StreamDataBodyPart("xml", new ByteArrayInputStream(xml.getBytes())));

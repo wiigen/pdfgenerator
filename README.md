@@ -5,7 +5,7 @@ Microservice written in Java that uses <a href="https://xmlgraphics.apache.org/f
 
 ### Prerequisites
 
-* Java 11 or higher
+* Java 17 or higher
 * Apache Maven
 
 ### Installation

@@ -3,17 +3,17 @@ package com.jw.pdfgenerator.resource;
 import com.jw.pdfgenerator.processor.DocumentProcessor;
 import io.prometheus.client.Histogram;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.fop.apps.FopFactory;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.InputStream;
 
 @Path("documents")
@@ -39,15 +39,12 @@ public class DocumentResource {
             @FormDataParam("xml") InputStream xml,
             @FormDataParam("xslt") InputStream xslt)
     {
-        Histogram.Timer requestTimer = requestLatency.startTimer();
-        try {
+        try (Histogram.Timer ignored = requestLatency.startTimer()) {
             StreamingOutput streamingOutput = new DocumentProcessor(fopFactory, xml, xslt);
 
             return Response.ok(streamingOutput)
                     .header("Content-Disposition", "attachment; filename=\"document.pdf\"")
                     .build();
-        } finally {
-            requestTimer.observeDuration();
         }
     }
 
