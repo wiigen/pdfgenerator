@@ -1,6 +1,10 @@
 package com.jw.pdfgenerator.resource;
 
 import com.jw.pdfgenerator.AppResourceConfig;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -9,25 +13,11 @@ import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
-import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 
 public class DocumentResourceTest extends JerseyTest {
-
-    private final String xml = """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <note>
-              <to>Tove</to>
-              <from>Jani</from>
-              <heading>Reminder</heading>
-              <body>Don't forget me this weekend!</body>
-            </note>""";
 
     @Override
     protected Application configure() {
@@ -36,6 +26,15 @@ public class DocumentResourceTest extends JerseyTest {
 
     @Test
     public void shouldCreateDocumentWith200Ok() throws Exception {
+        String xml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <note>
+                  <to>Tove</to>
+                  <from>Jani</from>
+                  <heading>Reminder</heading>
+                  <body>Don't forget me this weekend!</body>
+                </note>""";
+
         String xslt = """
                 <?xml version="1.0" encoding="utf-8"?>
                 <xsl:stylesheet version="1.0"
@@ -74,13 +73,11 @@ public class DocumentResourceTest extends JerseyTest {
 
         byte[] content = response.readEntity(byte[].class);
 
-        try (InputStream inputStream = new ByteArrayInputStream(content)) {
-            try (PDDocument pdf = PDDocument.load(inputStream)) {
-                assertEquals(1, pdf.getNumberOfPages());
+        try (PDDocument pdf = PDDocument.load(new ByteArrayInputStream(content))) {
+            assertEquals(1, pdf.getNumberOfPages());
 
-                String text = new PDFTextStripper().getText(pdf).trim();
-                assertEquals("Hello, Tove!", text);
-            }
+            String text = new PDFTextStripper().getText(pdf).trim();
+            assertEquals("Hello, Tove!", text);
         }
     }
 
